@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a project idea to gather data and develop an analysis of realty markets across the US for the purpose of long term investment properties. There are two major types of investment:
+This is a project to gather data and develop an analysis of realty markets across the US for the purpose of long term investment properties. There are two major types of investment:
 
 - investment for appreciation
 - investment as a rental property
@@ -15,31 +15,38 @@ This project seeks to address that gap.
 
 * [Background](#background)
 * [Data sources](#data-sources)
-* [EDA and visualization](#EDA-and-visualization)
-* [Project plan](#project-plan)
-* [MVP (minimum viable product)](#mvp-minimum-viable-product)
+* [Data cleaning and aggregation](#Data-cleaning-and-aggregation)
+* [EDA and visualization](#Exploratory-Data-Analysis)
+* [App development](#App-development)
+* [Conclusions](#Conclusions)
 * [End User and applications](#end-user-and-applications)
 * [Risk management](#risk-management)
 * [Future plans](#future-plans)
 
 ## Background
 
-The concept of buying property with the intention to rent comes down to some simple math for now.  You need to be able to the pay the mortgage and all expenses with the rental income to enable positive cash flow as well as building equity from day 1.  A common rule is the "1 % rule", [best explained here](https://affordanything.com/one-percent-rule-gross-rent-multiplier/).  In essence, it is similar to a price to earnings ratio in the stock market as a filter - you want the monthly rent to be at least 1% of the purchase price.  This leads to payoff in about 8 years.  This section will be further built out and developed later.
-An example of a company in this space is: 
-[Attomdata](https://www.attomdata.com/industries/real-estate).
+The concept of buying property with the intention to rent comes down to some simple math for now.  You need to be able to the pay the mortgage and all expenses with the rental income to enable positive cash flow as well as building equity from day 1.  A common rule is the "1 % rule", [best explained here](https://affordanything.com/one-percent-rule-gross-rent-multiplier/).  In essence, it is similar to a price to earnings ratio in the stock market as a filter - you want the monthly rent to be at least 1% of the purchase price.  This leads to payoff in about 8 years.  
 
 ## Data sources
 
-I am dividing this into two sections in case I am not able to integrate all data initially.
+In the current phase of this project, I have integrated the following data:
 
-Essential data:
+| Data             | Source | Year or time period available | year or time period focus | rows  | link                                                                                                          | format | key                           | filename                                      |
+|------------------|--------|-------------------------------|---------------------------|-------|---------------------------------------------------------------------------------------------------------------|--------|-------------------------------|-----------------------------------------------|
+| rent prices      | Zillow | 2014-2020                     | 2019                      | 3234  | https://www.zillow.com/research/data/                                                                         | csv    | zip code                      | Zip_ZORI_AllHomesPlusMultifamily_Smoothed.csv |
+| home prices      | Zillow | 1996-2020                     | 2019                      | 30442 | https://www.zillow.com/research/data/                                                                         | csv    | zip code                      | Zip_zhvi_uc_sfr_tier_0.33_0.67_sm_sa_mon.csv  |
+| new construction | Census | 2014-2019                     | 2019                      | 384   | https://www.census.gov/construction/bps/msaannual.html                                                        | xls    | CBSA                          | msaannual_201999.xls                          |
+| rental vacancy   | Census | 2015-2020                     | 2019                      | 75    | https://www.census.gov/housing/hvs/data/rates.html                                                            | xlsx   | Metropolitan Statistical Area | tab4_msa_15_20_rvr.xlsx                       |
+| population       | Census | 2010-2019                     | 2019                      | 81434 | https://www.census.gov/data/tables/time-series/demo/popest/2010s-total-metro-and-micro-statistical-areas.html | csv    | FIPS codes                    | cbsa-est2019-alldata.csv                      |
 
-| Data                | Source                              | Purpose    | Details
-| :----------------   | :---                                | :---       | :---
-| House prices and rent prices      | [Zillow](https://www.zillow.com/research/data/) | with rent prices, can determine ratios | TBA
-| New construction                  | [Census data](https://www.census.gov/construction/nrc/index.html) | While prices are lagging indicator, this should be a leading indicator | only high level data :( maybe this is better: [Census surveys](https://www.census.gov/construction/bps/msaannual.html)
-| Rental Vacancy rates (Table 4)     | [more Census](https://www.census.gov/housing/hvs/data/rates.html) | could be a proxy for rent prices which is hard to find | this is 75 largest metro areas
-| sub-county population estimates    | [Census pop data](https://www.census.gov/data/tables/time-series/demo/popest/2010s-total-cities-and-towns.html#ds)   | population trends will indicate future rent demand | TBA
+I also used these files to join the data together:
+https://www.census.gov/geographies/reference-files/time-series/demo/metro-micro/delineation-files.html
+
+I used this file to crosswalk the zip codes to the CBSAs:
+https://www.huduser.gov/portal/datasets/usps_crosswalk.html
+
+This is the source of the shapefiles for the maps:
+https://catalog.data.gov/dataset/tiger-line-shapefile-2019-nation-u-s-current-metropolitan-statistical-area-micropolitan-statist
 
 Data that will be useful for modeling down the road as additional factors:
 
@@ -58,45 +65,73 @@ https://www.huduser.gov/portal/datasets/fmr.html
 * Crime etc other factors:
 https://www.huduser.gov/portal/datasets/socds.html
 
+* Income data?
+
 * Foreclosure data?
 
-## EDA and visualization
-Because time series data will be complicated to analyze, I will focus initially on looking across the US at one timepoint: June 2019.  If I have time, I will look at June 2020 but COVID-19 may really affect 2020 data.  Ideally, I will focus on time points that I will be able to find detailed rent data as potential training data and to test the accuracy of any modeling approaches.
+## Data cleaning and aggregation
 
-On initial inspection, this data should lend itself nicely to these types of EDA, comparisons, and visualization.  
+For each of the five data sources, various rearrangements were needed to combine the data into one dataframe.  They are briefly highlighted here and more details are commented in the files.
 
-* Binning data by markets or geographical regions (some simple means, box plots, bar plots etc)
-* looking at variation and Standard Deviation and distribution of data (histograms, etc)
-* Using ANOVA to test if regions are really different than eachother
-* Building choropleth maps of the data.
+### Rent and home price data
 
-## Project plan
-The initial plan for the week of July 20 - July 24 is:
+A description of the rental price data is here: https://www.zillow.com/research/methodology-zori-repeat-rent-27092/
+I utilized the data by zip code, which is reported monthly, but not all zip codes and not every month.  In fact, some states did not have any rent data, these include: 'AK', 'ME', 'MT', 'ND', 'SD', 'VT', 'WV', 'WY'.  
 
-| Date                | Goal                                | Details
-| :----------------   | :---                                | :---
-| Monday July 20      | Organize and merge data into SQL db | details TBA
-| Tuesday July 21     | Summary data and initial EDA        | details TBA
-| Wednesday July 21   | create plots and maps               | details TBA
-| Thursday July 21    | EDA and testing                     | if time, build folio/flask app for maps
-| Friday July 21      | Presentation                        | if time, finish any presentation material, possibly put together some github io slides
+A description of the home price data is here: https://www.zillow.com/research/zhvi-methodology-2019-highlights-26221/
+I utilized the single family home median data by zip code.  Ideally I would pull more data and try to focus on the types of properties that would become rental units, possibly filtering by bedroom size etc.
 
-## MVP (minimum viable product)
+I merged this together by month and took the means for 2019, in only a couple cases did I not have any rent price data for 2019.
+I used the zip code to CBSA to associate a CBSA with each zip code and took the means for each CBSA, noting the SD which in some cases was high between zip codes, or in some CBSAs which included over 1,000 zip codes.  See under Population data for reasons for aggregating.
 
-For the initial week ending July 24, the MVP is:
+### Construction data
 
-1. Data organized in a database and 3 plots and 1 hypothesis test (I would love to do some Bayesian since I have never done this with real data - can we talk about this?)
-2. above, plus more plots and a choropleth
-3. above, plus a nicer presentation format and maps hosted online in a flask / docker app
+For the most part this was straightforward and had CBSA information, though only for the top 75 areas.
+
+### Rental vacancy data
+
+Sadly all of the files available in this area are poorly formatted excel files with outdated MSA region names but no CBSA codes.  I utilized the March 2020 "Principal cities of metropolitan and micropolitan statistical areas" file ("list2_2020.xls") from [here](https://www.census.gov/geographies/reference-files/time-series/demo/metro-micro/delineation-files.html) to resolve this and associate with current CBSA codes.
+
+### Population data
+
+While I had zip code specific price information, it would be difficult to include population data since Census doesn't use zip codes, and even though they have zip code tabulation areas, these don't list all zip codes in each area.  In addition, for the purposes of mapping, it would be easier to map CBSAs rather than zip codes.
+
+## Exploratory Data Analysis
+
+As I aggregated, I looked the variation in the data for the key variables in which I had the most data: rent and home prices.  Here, box plots highlight some potential outliers:
+
+< box plots and histograms >
+
+A summary of the data variation across zip codes:
+
+< table of means, SD etc >
+
+Once I had the data in one aggregated dataframe, I was able to look at relationships between the data.  Here is a scatterplot of the relationship between the prices:
+
+< scatterplot >
+
+I calculated the rent to price percent, as mentioned in the background this would be a key factor in investment decisions.  It does take into account potential expenses such as property tax etc.
+
+## App development
+
+Ideally this project will develop an app that will enable users to explore the data and filter based on their preferences.  Towards that end, the draft rent percent data was loaded into a map using Flask, Folium, and Heroku to deploy a browser based map, which is currently hosted here: https://realty-markets.herokuapp.com/.  Unfortunately because the map data is 50MB, it takes a while to load and I need to work further on optimizing it.
+
+## Conclusions
+
+In conclusion, I found:
+
+* point 1
+* point 2
 
 ## End User and applications
 
 The intended end users and market will be those looking to invest in realty with data supported decision making tools.  Ideally this will be in a subscription website or app format.
 
-## Risk management
-
-Initially this is addressed under the MVP section but this will be updated as the project proceeds.
-
 ## Future plans
+
 * pull data from more years and analyze time series
+* integrate more data sources mentioned above
+* convert to a SQL database using APIs to pull and organize data
+* test parameters like income to estimate others
 * use bayesian techniques to estimate rent and price for areas in which we don't have data yet
+* further develop app with time series slider and ability to map zip codes and standard deviation in data
