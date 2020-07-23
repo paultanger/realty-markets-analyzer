@@ -13,13 +13,14 @@ def index():
     # set the filepath and load in a shapefile
     #fp = '../data/tl_2019_us_cbsa/tl_2019_us_cbsa.shp'
     # for heroku
-    map_df = gpd.read_file(f'zip+s3://realty-markets-analyzer/tl_2019_us_cbsa.zip')
+    #map_df = gpd.read_file(f'zip+s3://realty-markets-analyzer/tl_2019_us_cbsa.zip')
     #map_df = gpd.read_file(fp)
-    map_df['CBSAFP'] = map_df['CBSAFP'].astype(str)
+    #map_df['CBSAFP'] = map_df['CBSAFP'].astype(str)
     # for heroku
-    agg_CBSA = pd.read_csv('s3://realty-markets-analyzer/agg_CBSA.csv')
-    agg_CBSA['CBSA'] = agg_CBSA['CBSA'].astype(str)
-    agg_CBSA_mapdf = gpd.pd.merge(map_df, agg_CBSA, left_on = 'CBSAFP', right_on = 'CBSA')
+    #agg_CBSA = pd.read_csv('s3://realty-markets-analyzer/agg_CBSA.csv')
+    #agg_CBSA['CBSA'] = agg_CBSA['CBSA'].astype(str)
+    #agg_CBSA_mapdf = gpd.pd.merge(map_df, agg_CBSA, left_on = 'CBSAFP', right_on = 'CBSA')
+    agg_CBSA_mapdf = gpd.read_file('s3://realty-markets-analyzer/agg_CBSA_mapdf.geojson')
 
     # salina, KS - center of US!
     center_coords = (38.8255662,-97.7023273)
