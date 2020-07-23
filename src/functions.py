@@ -10,24 +10,9 @@ def nice_filename(fname, extension):
     '''
     takes filename and extension and returns nice formatted name
     '''
+    from datetime import datetime
+    FORMAT = '%Y%m%d_%H%M'
     return fname + '_' + datetime.now().strftime(FORMAT) + '.' + extension
-
-def set_options(num_precision):
-    '''
-    sets options to what I like..
-    '''
-    pd.set_option('display.float_format', lambda x: '%.2f' % x)
-    pd.set_option("display.precision", 3)
-
-def timeit(method):
-    def timed(*args, **kw):
-        ts = time.time()
-        result = method(*args, **kw)
-        te = time.time()
-
-        print("{0} took {1:0.3f} seconds".format(method.__name__, te-ts))
-        return (result, te-ts)
-    return timed
 
 def plot_data(data_df, var_to_plot, yaxis, title, xlabel, ylabel, fontsize=12):
     '''
