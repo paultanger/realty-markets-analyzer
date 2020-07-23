@@ -1,1 +1,8 @@
-gunicorn
+Flask==1.1.2
+gunicorn==20.0.4
+pandas==1.0.5
+folium==0.11.0
+s3fs==0.4.2
+boto3==1.9.66
+folium==0.11.0
+geopandas==0.8.1
