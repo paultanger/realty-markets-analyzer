@@ -2,6 +2,8 @@ from flask import Flask
 import folium
 import pandas as pd
 import geopandas as gpd
+import boto3
+import s3fs
 
 app = Flask(__name__)
 
@@ -9,10 +11,13 @@ app = Flask(__name__)
 
 def index():
     # set the filepath and load in a shapefile
-    fp = '../data/tl_2019_us_cbsa/tl_2019_us_cbsa.shp'
-    map_df = gpd.read_file(fp)
+    #fp = '../data/tl_2019_us_cbsa/tl_2019_us_cbsa.shp'
+    # for heroku
+    map_df = gpd.read_file(f'zip+s3://realty-markets-analyzer/tl_2019_us_cbsa.zip')
+    #map_df = gpd.read_file(fp)
     map_df['CBSAFP'] = map_df['CBSAFP'].astype(str)
-    agg_CBSA = pd.read_csv('../data/agg_CBSA.csv')
+    # for heroku
+    agg_CBSA = pd.read_csv('s3://realty-markets-analyzer/agg_CBSA.csv')
     agg_CBSA['CBSA'] = agg_CBSA['CBSA'].astype(str)
     agg_CBSA_mapdf = gpd.pd.merge(map_df, agg_CBSA, left_on = 'CBSAFP', right_on = 'CBSA')
 
