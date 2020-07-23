@@ -20,7 +20,6 @@ This project seeks to address that gap.
 * [MVP (minimum viable product)](#mvp-minimum-viable-product)
 * [End User and applications](#end-user-and-applications)
 * [Risk management](#risk-management)
-* [Skills](#skills)
 * [Future plans](#future-plans)
 
 ## Background
@@ -98,15 +97,6 @@ The intended end users and market will be those looking to invest in realty with
 
 Initially this is addressed under the MVP section but this will be updated as the project proceeds.
 
-## Skills
-
-I would like to highlight the following skills with this project:
-
-* API use
-* SQL, pandas
-* plotting in matplotlib
-* Bayesian??
-* Docker, AWS, flask, folio
-
 ## Future plans
-* do it!
+* pull data from more years and analyze time series
+* use bayesian techniques to estimate rent and price for areas in which we don't have data yet
