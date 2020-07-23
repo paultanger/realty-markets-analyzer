@@ -70,7 +70,7 @@ def index():
     # folium.LayerControl().add_to(map1)
     #return map1._repr_html_()
     #map1.save('templates/map.html')
-    return render_template('index.html')
+    return render_template('../templates/index.html')
 
 if __name__ == '__main__':
     # testing
