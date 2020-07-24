@@ -9,14 +9,19 @@ class data_Agg(object):
     input: pandas dataframe
     '''
     def __init__(self, df, year):
-        self.df = df.copy()
+        self.df = df
         self.nice_filename = nice_filename
         self.figsize = (10,8)
-        ####### NOT WORKING !!!
-        self.df['CBSA'] = self.df.astype({'CBSA': 'str'})
-        self.df['ZIP'] = self.df.astype({'ZIP': 'str'})
+        self._fix_formats()
         # this will become useful later when we have multiple years of data
         self.year = year
+
+    def _fix_formats(self):
+        '''
+        fix up some df issues
+        '''
+        self.df = self.df.astype({'CBSA': 'str'})
+        self.df = self.df.astype({'ZIP': 'str'})
 
     # check nulls
     @property
@@ -32,7 +37,7 @@ class data_Agg(object):
         '''
         returns number of CBSAs
         '''
-        return len(self.df['CBSA'].unique())
+        return f"The number of CBSAs is: {len(self.df['CBSA'].unique())}"
     
     # return info for class
     def __repr__(self):
@@ -77,7 +82,7 @@ class data_Agg(object):
         '''
         self.fig, self.ax = plt.subplots(1, figsize=self.figsize)
         self.ax = self.df.boxplot(column = x, rot=90, return_type='axes')
-        self.ax.set_title(title)
+        self.ax.set_title(f'{title} , {self.year}')
         return self.fig, self.ax
 
     def histplot(self, x):
@@ -95,9 +100,13 @@ class data_Agg(object):
         returns scatterplot object
         '''
         self.fig, self.ax = plt.subplots(1, figsize=self.figsize)
-        self.ax = self.df.scatter(column = x, height=y)
+        self.ax = self.df.plot.scatter(x, y)
         return self.fig, self.ax
     
     # setup geopandas df
     def gpd_create(self):
+        pass
+
+    # plot map by factor (CBSA or state) and var
+    def plot_map(self):
         pass

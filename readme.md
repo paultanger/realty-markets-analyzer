@@ -96,7 +96,7 @@ I used the zip code to CBSA to associate a CBSA with each zip code and took the 
 
 ### Construction data
 
-New construction could influence the supply and demand of residential properties and could be a leading indicator for changes in an area.For the most part this was straightforward and had CBSA information, though only for the top 75 areas.
+New privately-owned residential construction - A monthly survey of 9,000 selected permit-issuing places; and an annual census of an additional 11,000 permit places that are not in the monthly sample. The monthly sample of permit-issuing places was selected using a stratified systematic sample procedure. All permit places located in selected large metropolitan areas were selected with certainty. The remaining places were stratified by state.  New construction could influence the supply and demand of residential properties and could be a leading indicator for changes in an area. For the most part this was straightforward and had CBSA information, though only for the top 75 areas.
 
 ### Rental vacancy data
 
@@ -104,17 +104,28 @@ Like new construction, vacancy rates could indicate trends and also the ability 
 
 ### Population data
 
-Population information could be used to control for variation or could indicate trends that would influence housing availability.  While I had zip code specific price information, it would be difficult to include population data since Census doesn't use zip codes, and even though they have [zip code tabulation areas](https://www.census.gov/programs-surveys/geography/guidance/geo-areas/zctas.html), these don't list all zip codes in each area.  In addition, for the purposes of mapping, it would be easier to map CBSAs rather than zip codes.
+Each year, the United States Census Bureau produces and publishes estimates of the population for the
+nation, states, counties, state/county equivalents, and Puerto Rico.1 We estimate the resident population for each year since the most recent decennial census by using measures of population change. The resident
+population includes all people currently residing in the United States. Population information could be used to control for variation or could indicate trends that would influence housing availability.  While I had zip code specific price information, it would be difficult to include population data since Census doesn't use zip codes, and even though they have [zip code tabulation areas](https://www.census.gov/programs-surveys/geography/guidance/geo-areas/zctas.html), these don't list all zip codes in each area.  In addition, for the purposes of mapping, it would be easier to map CBSAs rather than zip codes.
 
 ## Exploratory Data Analysis
 
 I chose to aggregate the data for reasons discussed above.  As I aggregated, I looked the variation in the data for the key variables in which I had the most data: rent and home prices.  Here, box plots highlight some potential outliers:
 
+In the initial data before aggregating, the high rent and high home prices come from just a couple areas:
+high rents (above $10k) were in 6 towns on Long Island: 'Bridgehampton' 'Water Mill' 'Hampton Bays' 'Sag Harbor' 'East Hampton' 'Southampton', and high home prices (above $6m) were in three zip codes in NYC: 10075 10065 10021.
+
+<div style="text-align:center"><img src="output/initial_scatter_prices.png" alt="scatter plot of prices" /></div>
+
+After removing these points (because no one is going to invest in these places!), the data is easier to see:
+
+<div style="text-align:center"><img src="output/filter_scatter_prices.png" alt="scatter plot of prices" /></div>
+
 < box plots and histograms >
 
-Specifically, it appears there are some zip codes that have high home prices, and outrageous rent prices.  Turns out, these are the sort of places you would expect, not sure who is renting for $50k a month?
+Just to validate, I looked to see if I could rent in these places:
 
-<div style="text-align:center"><img src="images/sag_harbor_rent.png" alt="Zillow rent results Sag Harbor, NY" /></div>
+<div style="text-align:center"><img src="output/filter_scatter_prices.png" alt="filtered data scatter prices" /></div>
 
 A summary of the data variation across zip codes:
 
