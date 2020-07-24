@@ -186,9 +186,10 @@ In order to aggregate this data, I needed to understand Census boundary classifi
 
 In the end this data lends itself to a predictive type of approach and it appeared there were large differences in the data within CBSAs.  However I still wanted to see the relationship between the rent percent I calculated, and the variables I have been using.  To do this, I performed correlation analysis using Spearman's and discovered that it is negatively correlated with population and new construction, but positively correlated with vacancy.  Keep in mind that I only have construction and vacancy data on a smaller subset of CBSAs.
 
-* rho with vacancy: 0.29
-* rho with construction: -0.36
+* rho with vacancy: 0.35
+* rho with construction: -0.47
 * rho with population: -0.29
+all p < 0.05
 
 For the predictive analysis, that will be performed down the road.
 
