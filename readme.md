@@ -127,7 +127,7 @@ Just to validate, I looked to see if I could rent in these places:
 
 As discussed above, my plan was to aggregate further by CBSAs, and as I did that, I tracked SD and the number of zip codes in each CBSA - some had large variation:
 
-| CBSA_name                                    |   zip_codes_num |   min_house_price |   max_house_price |   min_rent_price |   max_rent_price |
+| CBSA name                                    |   number of zip codes |   min house price |   max house price |   min rent price |   max rent price |
 |:---------------------------------------------|----------------:|------------------:|------------------:|-----------------:|-----------------:|
 | Los Angeles-Long Beach-Anaheim, CA           |             219 |        257,736.25 |      3,659,961.00 |         1,449.08 |         8,506.18 |
 | New York-Newark-Jersey City, NY-NJ-PA        |             215 |        178,553.33 |      5,608,781.83 |         1,287.25 |         7,014.58 |
@@ -147,7 +147,7 @@ Since I only had construction and vacancy data on a subset, I am keeping that da
 
 I calculated the rent to price percent, as mentioned in the background this would be a key factor in investment decisions.  It does take into account potential expenses such as property tax etc.
 
-|   zip_code | CBSA_name                                   |   house_price |   rent_price |   rent_pct |
+|   zip code | CBSA name                                   |   house price |   rent price |   rent pct |
 |-----------:|:--------------------------------------------|--------------:|-------------:|-----------:|
 |      48205 | Detroit-Warren-Dearborn, MI                 |     24,989.58 |       800.83 |       3.20 |
 |      21223 | Baltimore-Columbia-Towson, MD               |     43,384.25 |     1,226.58 |       2.83 |
@@ -163,7 +163,7 @@ I calculated the rent to price percent, as mentioned in the background this woul
 
 Here is the top five CBSAs by rent percent:
 
-| CBSA_name                                |   zip_codes |   house_price |   rent_price |   rent_pct |
+| CBSA name                                |   number of zip codes |   house price |   rent price |   rent pct |
 |:-----------------------------------------|------------:|--------------:|-------------:|-----------:|
 | Toledo, OH                               |          12 |     62,290.67 |       822.25 |       1.32 |
 | Syracuse, NY                             |          11 |    145,406.91 |     1,306.82 |       0.90 |
