@@ -121,21 +121,35 @@ After removing these points (because no one is going to invest in these places!)
 
 <div style="text-align:center"><img src="output/filter_scatter_prices.png" alt="scatter plot of prices" /></div>
 
-< box plots and histograms >
-
 Just to validate, I looked to see if I could rent in these places:
 
-<div style="text-align:center"><img src="output/filter_scatter_prices.png" alt="filtered data scatter prices" /></div>
+<div style="text-align:center"><img src="images/sag_harbor_rent.png" alt="Sag Harbor rentals screenshot" /></div>
 
-A summary of the data variation across zip codes:
+After aggregating the means and SD over 12 months of 2019, the variables looked like:
+
+histograms box plots of rent, home, vacancy and construction
+
+throw out rent when I have more than 20% CV or less than 2 month of data?
+
+As discussed above, my plan was to aggregate further by CBSAs, and as I did that, I tracked SD and the number of zip codes in each CBSA:
 
 < table of means, SD etc >
 
 Once I had the data in one aggregated dataframe, I was able to look at relationships between the data.  Here is a scatterplot of the relationship between the prices:
 
-< scatterplot >
+< scatterplot of rent and home prices, colored by state? >
+
+Since I only had construction and vacancy data on a subset, I am keeping that data but didn't include much analysis - I think it will be more useful down the road as potential features to integrate into models.
 
 I calculated the rent to price percent, as mentioned in the background this would be a key factor in investment decisions.  It does take into account potential expenses such as property tax etc.
+
+< table of rent percent box plot and variation data >
+
+I also aggregated by state, and include counts of CBSAs in each state, and also to demonstrate two important aspects of this data:
+* States with no data
+* variation in the data among states
+
+< two maps, one of rent pct, and one of rent pct SD>
 
 In order to aggregate this data, I needed to understand Census boundary classifications of which there are many.  In the end, I settled on using CBSAs because they were higher resolution than states, but available to map more easily than zip codes.  While there are around 930 CBSAs, my data only included 140 of them, mostly due the lack of rent data.
 

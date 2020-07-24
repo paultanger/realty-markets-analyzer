@@ -16,3 +16,4 @@ if __name__ == '__main__':
     thefig, theax = dataobj.histplot('rent_price')
     #dataobj.save_plot('hist', 'png')
     #dataobj.scatter('rent_price', 'house_price')
+    new_agg = dataobj.agg_by_zip()
