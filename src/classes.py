@@ -53,7 +53,7 @@ class data(object):
 
     # get corr
     def get_corr(self):
-        return self.df.corr().style.background_gradient(cmap='coolwarm').set_precision(2)
+        return self.df.corr(method='spearman').style.background_gradient(cmap='coolwarm').set_precision(2)
 
     # just return as df
     def as_df(self):
