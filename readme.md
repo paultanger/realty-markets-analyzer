@@ -173,15 +173,14 @@ Here is the top five CBSAs by rent percent:
 
 I also aggregated by state, and include counts of CBSAs in each state, and also to demonstrate two important aspects of this data:
 
-* States with no data
-
-<div style="text-align:center"><img src="output/plots/rent_pct.png" alt="rent pct" /></div>
-<div style="text-align:center"><img src="output/plots/rent_SD.png" alt="rent SD" /></div>
-
 * variation in the data among states
 
 <div style="text-align:center"><img src="output/plots/state_map.png" alt="rent by state" /></div>
 
+* States with no data
+
+<div style="text-align:center"><img src="output/plots/rent_pct.png" alt="rent pct" /></div>
+<div style="text-align:center"><img src="output/plots/rent_SD.png" alt="rent SD" /></div>
 
 In order to aggregate this data, I needed to understand Census boundary classifications of which there are many.  In the end, I settled on using CBSAs because they were higher resolution than states, but available to map more easily than zip codes.  While there are around 930 CBSAs, my data only included 140 of them, mostly due the lack of rent data.
 
