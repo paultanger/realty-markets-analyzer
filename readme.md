@@ -173,11 +173,11 @@ Here is the top five CBSAs by rent percent:
 
 I also aggregated by state, and include counts of CBSAs in each state, and also to demonstrate two important aspects of this data:
 
-* variation in the data among states
+* States with no data
 
 <div style="text-align:center"><img src="output/plots/state_map.png" alt="rent by state" /></div>
 
-* States with no data
+* variation in the data among states
 
 <div style="text-align:center"><img src="output/plots/rent_pct.png" alt="rent pct" /></div>
 <div style="text-align:center"><img src="output/plots/rent_SD.png" alt="rent SD" /></div>
