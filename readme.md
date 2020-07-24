@@ -175,7 +175,8 @@ I also aggregated by state, and include counts of CBSAs in each state, and also 
 
 * States with no data
 
-<div style="text-align:center"><img src="output/plots/rent_maps.png" alt="rent by CBSA" /></div>
+<div style="text-align:center"><img src="output/plots/rent_pct.png" alt="rent pct" /></div>
+<div style="text-align:center"><img src="output/plots/rent_SD.png" alt="rent SD" /></div>
 
 * variation in the data among states
 
@@ -186,9 +187,9 @@ In order to aggregate this data, I needed to understand Census boundary classifi
 
 In the end this data lends itself to a predictive type of approach and it appeared there were large differences in the data within CBSAs.  However I still wanted to see the relationship between the rent percent I calculated, and the variables I have been using.  To do this, I performed correlation analysis using Spearman's and discovered that it is negatively correlated with population and new construction, but positively correlated with vacancy.  Keep in mind that I only have construction and vacancy data on a smaller subset of CBSAs.
 
-rho with vacancy: 0.29
-rho with construction: -0.36
-rho with population: -0.29
+* rho with vacancy: 0.29
+* rho with construction: -0.36
+* rho with population: -0.29
 
 For the predictive analysis, that will be performed down the road.
 
@@ -224,6 +225,6 @@ The intended end users and market will be those looking to invest in realty with
 
 The main files use for this analysis are:
 
-classes and functions are in src/classes.py and src/functions.py
-initial exploration is in notebooks/EDA.ipynb
-aggregation and plotting is in notebooks/aggregation.ipynb
+* classes and functions are in src/classes.py and src/functions.py
+* initial exploration is in notebooks/EDA.ipynb
+* aggregation and plotting is in notebooks/aggregation.ipynb
