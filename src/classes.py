@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# this is overall class - 2 below will inherit from
+# this is overall class - below will inherit from
 class data(object):
     '''
     input: pandas dataframe
@@ -16,10 +16,6 @@ class data(object):
         # this will become useful later when we have multiple years of data
         self.year = year
     
-    # get rent percent
-    def get_pct(self, df_to_add):
-        df_to_add['rent_pct'] = df_to_add['rent_price'] / df_to_add['house_price'] * 100
-    
     # check nulls
     @property
     def nulls(self):
@@ -28,12 +24,30 @@ class data(object):
         '''
         return self.df[self.df.isna().any(axis=1)].count()
     
+    # check levels of factor
+    def uniq(self, factor):
+        '''
+        returns levels of cat variable
+        '''
+        return f"The number of {factor} is: {self.df[factor].unique()}"
+
+    def uniq_len(self, factor):
+        '''
+        returns count of levels of cat variable
+        '''
+        return f"The number of {factor} is: {len(self.df[factor].unique())}"
+    
     # return info for class
     def __repr__(self):
         return  f'This is a pd object from {self.year} with: {self.df.info()}'
 
     ## METHODS ##
+    # get rent percent
+    def get_pct(self, df_to_add):
+        df_to_add['rent_pct'] = df_to_add['rent_price'] / df_to_add['house_price'] * 100
+    
     # drop nulls
+    @property
     def drop(self):
         self.df.dropna(subset=['rent_price'], axis=0)
 
@@ -41,14 +55,21 @@ class data(object):
     def get_corr(self):
         return self.df.corr().style.background_gradient(cmap='coolwarm').set_precision(2)
 
+    # just return as df
+    def as_df(self):
+        '''
+        return back as a pandas df
+        '''
+        return self.df
+
     # save as csv
     # or just put in here directly rather than a separate functions
-    def save(self, fname, extension):
+    def save(self, fname):
         '''
-        accepts filename and extension
+        accepts filename
         saves as csv with timestamp added
         '''
-        self.filename = self.nice_filename(fname, extension)
+        self.filename = self.nice_filename(fname, 'csv')
         self.df.to_csv(self.filename, index=False)
         return print(f'saved as {self.filename}')
 
@@ -116,14 +137,6 @@ class data_un_Agg(data):
                     'Q2' : 'vacancy_pct',
                     'Total' : 'construction_19_Q2'})
 
-    # check CBSAs
-    @property
-    def uniq_len(self):
-        '''
-        returns number of CBSAs
-        '''
-        return f"The number of CBSAs is: {len(self.df['CBSA'].unique())}"
-    
     ## METHODS ##
     def agg_by_zip(self):
         '''
@@ -140,6 +153,7 @@ class data_un_Agg(data):
             construction_19_Q2 = ('construction_19_Q2', 'mean')
             ).reset_index()
         self.get_pct(self.agg_zip)
+        self.agg_zip['rent_CV'] = self.agg_zip['rent_priceSD'] / self.agg_zip['rent_price']
         return data(self.agg_zip, 2019)
 
     # agg by CBSA
@@ -155,6 +169,7 @@ class data_un_Agg(data):
             construction_19_Q2 = ('construction_19_Q2', 'mean')
             ).reset_index()
         self.get_pct(self.agg_CBSA)
+        self.agg_CBSA['rent_CV'] = self.agg_CBSA['rent_priceSD'] / self.agg_CBSA['rent_price']
         return data(self.agg_CBSA, 2019)
     
     def agg_by_state(self):

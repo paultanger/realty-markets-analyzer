@@ -17,3 +17,12 @@ if __name__ == '__main__':
     #dataobj.save_plot('hist', 'png')
     #dataobj.scatter('rent_price', 'house_price')
     new_agg = dataobj.agg_by_zip()
+
+    # class ex_data(pd.core.frame.DataFrame):
+    # def __init__(self, df):
+    #     self._obj = df._obj
+        # self._data = df._data
+        # self._item_cache = df._item_cache
+        # self.columns = df.columns
+        # self.index = df.index
+        # self.values=df.values

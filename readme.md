@@ -125,37 +125,70 @@ Just to validate, I looked to see if I could rent in these places:
 
 <div style="text-align:center"><img src="images/sag_harbor_rent.png" alt="Sag Harbor rentals screenshot" /></div>
 
+As discussed above, my plan was to aggregate further by CBSAs, and as I did that, I tracked SD and the number of zip codes in each CBSA - some had large variation:
+
+| CBSA_name                                    |   zip_codes_num |   min_house_price |   max_house_price |   min_rent_price |   max_rent_price |
+|:---------------------------------------------|----------------:|------------------:|------------------:|-----------------:|-----------------:|
+| Los Angeles-Long Beach-Anaheim, CA           |             219 |        257,736.25 |      3,659,961.00 |         1,449.08 |         8,506.18 |
+| New York-Newark-Jersey City, NY-NJ-PA        |             215 |        178,553.33 |      5,608,781.83 |         1,287.25 |         7,014.58 |
+| Miami-Fort Lauderdale-Pompano Beach, FL      |             142 |        169,412.08 |      2,467,936.17 |         1,200.33 |         4,264.08 |
+| Chicago-Naperville-Elgin, IL-IN-WI           |             139 |         51,841.91 |      1,200,853.58 |           852.00 |         3,152.73 |
+| Washington-Arlington-Alexandria, DC-VA-MD-WV |             125 |        205,120.67 |      1,510,548.17 |         1,242.27 |         4,068.90 |
+
 After aggregating the means and SD over 12 months of 2019, the variables looked like:
 
-histograms box plots of rent, home, vacancy and construction
+<div style="text-align:center"><img src="output/plots/CBSA_boxplots.png" alt="boxplots CBSA" /></div>
 
-throw out rent when I have more than 20% CV or less than 2 month of data?
+Once I had the data in one aggregated dataframe, I was able to look at relationships between the data.  Here is a scatterplot of the relationship between the prices for the means of CBSA:
 
-As discussed above, my plan was to aggregate further by CBSAs, and as I did that, I tracked SD and the number of zip codes in each CBSA:
-
-< table of means, SD etc >
-
-Once I had the data in one aggregated dataframe, I was able to look at relationships between the data.  Here is a scatterplot of the relationship between the prices:
-
-< scatterplot of rent and home prices, colored by state? >
+<div style="text-align:center"><img src="output/plots/CBSA_scatter.png" alt="scatterplot CBSA" /></div>
 
 Since I only had construction and vacancy data on a subset, I am keeping that data but didn't include much analysis - I think it will be more useful down the road as potential features to integrate into models.
 
 I calculated the rent to price percent, as mentioned in the background this would be a key factor in investment decisions.  It does take into account potential expenses such as property tax etc.
 
-< table of rent percent box plot and variation data >
+|   zip_code | CBSA_name                                   |   house_price |   rent_price |   rent_pct |
+|-----------:|:--------------------------------------------|--------------:|-------------:|-----------:|
+|      48205 | Detroit-Warren-Dearborn, MI                 |     24,989.58 |       800.83 |       3.20 |
+|      21223 | Baltimore-Columbia-Towson, MD               |     43,384.25 |     1,226.58 |       2.83 |
+|      48228 | Detroit-Warren-Dearborn, MI                 |     31,398.67 |       883.17 |       2.81 |
+|      60636 | Chicago-Naperville-Elgin, IL-IN-WI          |     53,081.08 |     1,298.33 |       2.45 |
+|      48227 | Detroit-Warren-Dearborn, MI                 |     33,044.58 |       796.50 |       2.41 |
+|      44105 | Cleveland-Elyria, OH                        |     33,844.50 |       783.25 |       2.31 |
+|      19132 | Philadelphia-Camden-Wilmington, PA-NJ-DE-MD |     45,085.33 |     1,034.92 |       2.30 |
+|      63136 | St. Louis, MO-IL                            |     39,071.92 |       854.42 |       2.19 |
+|      48224 | Detroit-Warren-Dearborn, MI                 |     37,301.75 |       806.83 |       2.16 |
+|      60621 | Chicago-Naperville-Elgin, IL-IN-WI          |     51,841.91 |     1,085.09 |       2.09 |
+
+
+Here is the top five CBSAs by rent percent:
+
+| CBSA_name                                |   zip_codes |   house_price |   rent_price |   rent_pct |
+|:-----------------------------------------|------------:|--------------:|-------------:|-----------:|
+| Toledo, OH                               |          12 |     62,290.67 |       822.25 |       1.32 |
+| Syracuse, NY                             |          11 |    145,406.91 |     1,306.82 |       0.90 |
+| Little Rock-North Little Rock-Conway, AR |          47 |     88,210.00 |       758.45 |       0.86 |
+| Memphis, TN-MS-AR                        |          36 |    154,579.97 |     1,300.36 |       0.84 |
+| Dayton-Kettering, OH                     |          98 |    105,751.48 |       878.26 |       0.83 |
 
 I also aggregated by state, and include counts of CBSAs in each state, and also to demonstrate two important aspects of this data:
+
 * States with no data
+
+<div style="text-align:center"><img src="output/plots/rent_maps.png" alt="rent by CBSA" /></div>
+
 * variation in the data among states
 
-< two maps, one of rent pct, and one of rent pct SD>
+<div style="text-align:center"><img src="output/plots/state_map.png" alt="rent by state" /></div>
+
 
 In order to aggregate this data, I needed to understand Census boundary classifications of which there are many.  In the end, I settled on using CBSAs because they were higher resolution than states, but available to map more easily than zip codes.  While there are around 930 CBSAs, my data only included 140 of them, mostly due the lack of rent data.
 
-In the end this data lends itself to a predictive type of approach and it appeared there were large differences in the data within CBSAs.  However I still wanted to test this so I performed XXXX.
+In the end this data lends itself to a predictive type of approach and it appeared there were large differences in the data within CBSAs.  However I still wanted to see the relationship between the rent percent I calculated, and the variables I have been using.  To do this, I performed correlation analysis using Spearman's and discovered that it is negatively correlated with population and new construction, but positively correlated with vacancy.  Keep in mind that I only have construction and vacancy data on a smaller subset of CBSAs.
 
-< results of testing >
+rho with vacancy: 0.29
+rho with construction: -0.36
+rho with population: -0.29
 
 For the predictive analysis, that will be performed down the road.
 
@@ -169,8 +202,8 @@ Ideally this project will develop an app that will enable users to explore the d
 
 In conclusion, I found:
 
-* point 1
-* point 2
+* Large variation across zip codes and CBSAs for investible characteristics in rental properties
+* Some potentially interesting zip codes that can be further investigated
 
 ## End User and applications
 
@@ -186,3 +219,11 @@ The intended end users and market will be those looking to invest in realty with
 * test parameters like income to estimate others
 * use bayesian techniques to estimate rent and price for areas in which we don't have data yet
 * further develop app with time series slider and ability to map zip codes and standard deviation in data
+
+## Code details
+
+The main files use for this analysis are:
+
+classes and functions are in src/classes.py and src/functions.py
+initial exploration is in notebooks/EDA.ipynb
+aggregation and plotting is in notebooks/aggregation.ipynb
