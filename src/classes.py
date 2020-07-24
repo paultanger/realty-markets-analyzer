@@ -22,7 +22,39 @@ class data_Agg(object):
         '''
         self.df = self.df.astype({'CBSA': 'str'})
         self.df = self.df.astype({'ZIP': 'str'})
+        self.df = self.df.iloc[:, [0,2,1,4,6,10,11,12,3,16,25]].copy()
+        self.df = self.df.rename(columns={'LSAD': 'CBSA_type',
+                    'NAME': 'CBSA_name',
+                    'ZIP' : 'zip_code',
+                    'State' : 'state',
+                    'POPESTIMATE2019': 'pop_2019_est',
+                    'Q2' : 'vacancy_pct',
+                    'Total' : 'construction_19_Q2'})
 
+    def agg_by_zip(self):
+        '''
+        aggregate by zip code and return new df
+        '''
+        self.agg_zip = self.df.groupby(['CBSA', 'CBSA_type', 'CBSA_name', 'zip_code', 'state']).agg(
+        house_price = ('house_price', 'mean'),
+        house_priceSD = ('house_price', 'std'),
+        rent_price = ('rent_price', 'mean'),
+        rent_priceSD = ('rent_price', 'std'),
+        #house_priceN = ('house_price', 'count'),
+        rent_priceN = ('rent_price', 'count'),
+        pop_2019_est = ('pop_2019_est', 'mean'),
+        vacancy_pct = ('vacancy_pct', 'mean'),
+        construction_19_Q2 = ('construction_19_Q2', 'mean')
+        ).reset_index()
+        self.get_pct(self.agg_zip)
+        # actually we want three classes:
+        # 1 generic and 2 that inherit with specific methods for agg and unagg data
+        #return data_Agg(self.agg_zip, 2019)
+    
+    # get rent percent
+    def get_pct(self, df_to_add):
+        df_to_add['rent_pct'] = df_to_add['rent_price'] / df_to_add['house_price'] * 100
+    
     # check nulls
     @property
     def nulls(self):
@@ -45,6 +77,27 @@ class data_Agg(object):
 
     ## METHODS ##
     # drop nulls
+    def drop(self):
+        self.df.dropna(subset=['rent_price'], axis=0)
+
+    # agg by CBSA
+    def agg_by_CBSA(self):
+        self.agg_CBSA = self.df.groupby(['CBSA', 'CBSA_type', 'CBSA_name', 'state']).agg(
+        house_price = ('house_price', 'mean'),
+        house_priceSD = ('house_price', 'std'),
+        rent_price = ('rent_price', 'mean'),
+        rent_priceSD = ('rent_price', 'std'),
+        zip_codes = ('zip_code', 'count'),
+        pop_2019_est = ('pop_2019_est', 'mean'),
+        vacancy_pct = ('vacancy_pct', 'mean'),
+        construction_19_Q2 = ('construction_19_Q2', 'mean')
+        ).reset_index()
+        self.get_pct(self.agg_zip)
+        #return data_Agg(self.agg_CBSA, 2019)
+
+    # get corr
+    def get_corr(self):
+        return agg_CBSA.corr().style.background_gradient(cmap='coolwarm').set_precision(2)
 
     # save as csv
     # or just put in here directly rather than a separate functions
