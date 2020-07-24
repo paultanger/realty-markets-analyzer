@@ -8,55 +8,96 @@ class data_Agg(object):
     '''
     input: pandas dataframe
     '''
-    def __init__(self, df):
+    def __init__(self, df, year):
         self.df = df.copy()
         self.nice_filename = nice_filename
+        self.figsize = (10,8)
+        ####### NOT WORKING !!!
         self.df['CBSA'] = self.df.astype({'CBSA': 'str'})
-        #self.df['ZIP'] = self.df.astype({'ZIP': 'str'})
-
-    # setup vars for plotting - title axis label etc
-
-    # methods
+        self.df['ZIP'] = self.df.astype({'ZIP': 'str'})
+        # this will become useful later when we have multiple years of data
+        self.year = year
 
     # check nulls
+    @property
+    def nulls(self):
+        '''
+        returns counts of all nulls
+        '''
+        return self.df[self.df.isna().any(axis=1)].count()
 
+    # check CBSAs
+    @property
+    def uniq_len(self):
+        '''
+        returns number of CBSAs
+        '''
+        return len(self.df['CBSA'].unique())
+    
+    # return info for class
+    def __repr__(self):
+        return  f'This is a pd object from {self.year} with: {self.df.info()}'
+
+    ## METHODS ##
     # drop nulls
 
     # save as csv
     # or just put in here directly rather than a separate functions
     def save(self, fname, extension):
+        '''
+        accepts filename and extension
+        saves as csv with timestamp added
+        '''
         self.filename = self.nice_filename(fname, extension)
-        return self.df.to_csv(self.filename)
-        print(f'saved as {self.filename}')
+        self.df.to_csv(self.filename, index=False)
+        return print(f'saved as {self.filename}')
 
-    # check CBSAs
-    @property
-    def uniq_len(self, self.df):
-        return self.df['CBSA'].unique()
+    # make tables
+    def best(self, n):
+        '''
+        return n best places to buy
+        '''
+        return n
 
-    # return info for class
-    def __repr__(self):
-        return  f'This is a pd object with: \n {self.df.info()}'
+    # save plot to file
+    def save_plot(self, fname, extension):
+        '''
+        accepts filename and extension
+        saves as fig in current dir with timestamp
+        '''
+        self.filename = self.nice_filename(fname, extension)
+        self.fig.savefig(self.filename)
+        return print(f'saved as {self.filename}')
+
+    # make diff types of plots
+    def boxplot(self, x, title):
+        '''
+        accepts column and title (str)
+        returns boxplot object
+        '''
+        self.fig, self.ax = plt.subplots(1, figsize=self.figsize)
+        self.ax = self.df.boxplot(column = x, rot=90, return_type='axes')
+        self.ax.set_title(title)
+        return self.fig, self.ax
+
+    def histplot(self, x):
+        '''
+        accepts column
+        returns histogram object
+        '''
+        self.fig, self.ax = plt.subplots(1, figsize=self.figsize)
+        self.ax = self.df.hist(column = x, ax=self.ax)
+        return self.fig, self.ax
+    
+    def scatter(self, x, y):
+        '''
+        accepts two cols to plot
+        returns scatterplot object
+        '''
+        self.fig, self.ax = plt.subplots(1, figsize=self.figsize)
+        self.ax = self.df.scatter(column = x, height=y)
+        return self.fig, self.ax
     
     # setup geopandas df
     def gpd_create(self):
-        pass
-
-    # make diff types of plots
-    def boxplot(self):
-        pass
-        # fig, axs = plt.subplots(1,figsize=(8,4))
-        # #flip_num = np.arange(1, num_flips + 1)
-        # axs.bar(x=list(self.prior.keys()), height=list(self.prior.values()), label=label)
-        # #axs[0].plot(np.arange(1,num_flips+1),np.cumsum(data)/np.arange(1,num_flips+1))
-        # #axs[0].axhline(.5, color = 'green', linestyle = '--')
-        # #axs[0].axhline(p, color = 'green', linestyle = '--')
-        # axs.set_xlabel('die', fontsize=16)
-        # axs.set_ylabel('probability', fontsize=16)
-        # axs.set_title(title)
-
-    def histplot(self):
-        pass
-
-    def histplot(self):
         pass
