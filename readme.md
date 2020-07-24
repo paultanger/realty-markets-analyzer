@@ -189,6 +189,7 @@ In the end this data lends itself to a predictive type of approach and it appear
 * rho with vacancy: 0.35
 * rho with construction: -0.47
 * rho with population: -0.29
+
 all p < 0.05
 
 For the predictive analysis, that will be performed down the road.
