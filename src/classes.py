@@ -261,3 +261,138 @@ class data_un_Agg(data):
         self.axs[0].axis('off')
         self.axs[1].axis('off')
         return self.fig, self.axs
+
+### make an unaggregated class here
+class data_un_Agg_no_rent(data):
+    '''
+    inherits from data class
+    input: pandas dataframe
+    '''
+    def __init__(self, df, year):
+        data.__init__(self, df, year)
+        self._fix_formats()
+
+    def _fix_formats(self):
+        '''
+        fix up some df issues
+        '''
+        self.df = self.df.astype({'CBSA': 'str'})
+        self.df = self.df.astype({'ZIP': 'str'})
+        self.df = self.df.iloc[:, [0,2,1,4,6,10,11,12,3,16,25]].copy()
+        self.df = self.df.rename(columns={'LSAD': 'CBSA_type',
+                    'NAME': 'CBSA_name',
+                    'ZIP' : 'zip_code',
+                    'State' : 'state',
+                    'POPESTIMATE2019': 'pop_2019_est',
+                    # 'Q2' : 'vacancy_pct',
+                    'Total' : 'construction_19_Q2'})
+
+    ## METHODS ##
+    def agg_by_zip(self):
+        '''
+        aggregate by zip code and return new data obj
+        '''
+        self.agg_zip = self.df.groupby(['CBSA', 'CBSA_type', 'CBSA_name', 'zip_code', 'state']).agg(
+            house_price = ('house_price', 'mean'),
+            house_priceSD = ('house_price', 'std'),
+            # rent_price = ('rent_price', 'mean'),
+            # rent_priceSD = ('rent_price', 'std'),
+            # rent_priceN = ('rent_price', 'count'),
+            pop_2019_est = ('pop_2019_est', 'mean'),
+            # vacancy_pct = ('vacancy_pct', 'mean'),
+            # construction_19_Q2 = ('construction_19_Q2', 'mean')
+            ).reset_index()
+        # self.get_pct(self.agg_zip)
+        # self.agg_zip['rent_CV'] = self.agg_zip['rent_priceSD'] / self.agg_zip['rent_price']
+        return data(self.agg_zip, 2019)
+
+    # agg by CBSA
+    def agg_by_CBSA(self):
+        self.agg_CBSA = self.df.groupby(['CBSA', 'CBSA_type', 'CBSA_name', 'state']).agg(
+            house_price = ('house_price', 'mean'),
+            house_priceSD = ('house_price', 'std'),
+            rent_price = ('rent_price', 'mean'),
+            rent_priceSD = ('rent_price', 'std'),
+            zip_codes = ('zip_code', 'count'),
+            pop_2019_est = ('pop_2019_est', 'mean'),
+            # vacancy_pct = ('vacancy_pct', 'mean'),
+            construction_19_Q2 = ('construction_19_Q2', 'mean')
+            ).reset_index()
+        self.get_pct(self.agg_CBSA)
+        self.agg_CBSA['rent_CV'] = self.agg_CBSA['rent_priceSD'] / self.agg_CBSA['rent_price']
+        return data(self.agg_CBSA, 2019)
+    
+    def agg_by_state(self):
+        self.agg_state = self.df.groupby(['state']).agg(
+            house_price = ('house_price', 'mean'),
+            house_priceSD = ('house_price', 'std'),
+            rent_price = ('rent_price', 'mean'),
+            rent_priceSD = ('rent_price', 'std'),
+            zip_codes = ('zip_code', 'count'),
+            pop_2019_est = ('pop_2019_est', 'mean'),
+            vacancy_pct = ('vacancy_pct', 'mean'),
+            construction_19_Q2 = ('construction_19_Q2', 'mean')
+            ).reset_index()
+        self.get_pct(self.agg_state)
+        return data(self.agg_state, 2019)
+
+    # save as csv
+    def save(self, fname, extension):
+        '''
+        accepts filename and extension
+        saves as csv with timestamp added
+        '''
+        self.filename = self.nice_filename(fname, extension)
+        self.df.to_csv(self.filename, index=False)
+        return print(f'saved as {self.filename}')
+
+    # make tables
+    def best(self, n):
+        '''
+        return n best places to buy
+        '''
+        return n
+
+    # setup geopandas df
+    def gpd_create(self):
+        fp = '../data/tl_2019_us_state/tl_2019_us_state.shp'
+        map_states = gpd.read_file(fp)
+        map_states = map_states[map_states['REGION'] != '9']
+        # sure there is a better way but for now.. to make the maps bigger
+        map_states = map_states[map_states['STUSPS'] != 'AK']
+        map_states = map_states[map_states['STUSPS'] != 'HI']
+        # set the filepath and load in a shapefile
+        fp = '../data/tl_2019_us_cbsa/tl_2019_us_cbsa.shp'
+        map_df = gpd.read_file(fp)
+        map_df['CBSAFP'] = map_df['CBSAFP'].astype(str)
+        agg_CBSA_mapdf = gpd.pd.merge(map_df, agg_CBSA.df, left_on = 'CBSAFP', right_on = 'CBSA')
+        agg_CBSA_mapdf = agg_CBSA_mapdf[agg_CBSA_mapdf['state'] != 'AK']
+        agg_CBSA_mapdf = agg_CBSA_mapdf[agg_CBSA_mapdf['state'] != 'HI']
+        return map_states, agg_CBSA_mapdf
+
+    # plot map by factor (CBSA or state) and var
+    def plot_map(self, title, col):
+        '''
+        returns a map fig with col of interest plotted
+        '''
+        self.fig, self.axs = plt.subplots(1,2, figsize=(20, 10))
+        self.ax.set_aspect('equal')
+        map_states.geometry.boundary.plot(color=None, alpha = .5, ax=self.axs[0], linewidth=0.3)
+        map_states.geometry.boundary.plot(color=None, alpha = .5, ax=self.axs[1], linewidth=0.3)
+
+        agg_CBSA_mapdf.plot(column='rent_pct', cmap='YlGnBu', ax=self.axs[0], linewidth = 0.8)
+        agg_CBSA_mapdf.plot(column='rent_priceSD', cmap='YlGnBu', ax=self.axs[1], linewidth = 0.8)
+
+        xlim = ([map_states.total_bounds[0],  map_states.total_bounds[2]])
+        ylim = ([map_states.total_bounds[1],  map_states.total_bounds[3]])
+
+        self.axs[0].set_xlim(xlim)
+        self.axs[0].set_ylim(ylim)
+        self.axs[1].set_xlim(xlim)
+        self.axs[1].set_ylim(ylim)
+
+        self.axs[0].set_title('rent percent, 2019', x=0.5, y=1.08, fontsize=14)
+        self.axs[1].set_title('rent price SD, 2019', x=0.5, y=1.08, fontsize=14)
+        self.axs[0].axis('off')
+        self.axs[1].axis('off')
+        return self.fig, self.axs
